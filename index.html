@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusBI | منصة تحليلات الأعمال الذكية</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; color: #f8fafc; }
+        .glass { background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        input[type="range"] { accent-color: #6366f1; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- الشريط العلوي (Navbar) -->
+    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30">
+                <i data-lucide="activity" class="text-white w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-wide">Nexus<span class="gradient-text">BI</span></h1>
+                <p class="text-xs text-slate-400">نظام ذكاء الأعمال والمحاكاة المالية</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="hidden md:flex items-center gap-2 text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> النظام متصل ومحدث لحظياً
+            </span>
+            <button onclick="exportReport()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition shadow-lg shadow-indigo-600/20">
+                <i data-lucide="download" class="w-4 h-4"></i> تصدير التقرير
+            </button>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+
+        <!-- 1. بطاقات المؤشرات الرئيسية (KPI Cards) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass p-6 rounded-2xl relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-slate-400 text-sm">إجمالي الإيرادات المتوقعة</p>
+                        <h2 id="kpi-revenue" class="text-3xl font-extrabold mt-2 text-white">$148,500</h2>
+                    </div>
+                    <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl"><i data-lucide="dollar-sign"></i></div>
+                </div>
+                <p class="text-xs text-emerald-400 mt-4 flex items-center gap-1">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i> +18.4% مقارنة بالربع السابق
+                </p>
+            </div>
+
+            <div class="glass p-6 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-slate-400 text-sm">صافي الأرباح (Net Profit)</p>
+                        <h2 id="kpi-profit" class="text-3xl font-extrabold mt-2 text-emerald-400">$64,200</h2>
+                    </div>
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl"><i data-lucide="pie-chart"></i></div>
+                </div>
+                <p class="text-xs text-slate-400 mt-4">هامش ربح تشغيلي مرتفع الكفاءة</p>
+            </div>
+
+            <div class="glass p-6 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-slate-400 text-sm">العائد على الاستثمار (ROI)</p>
+                        <h2 id="kpi-roi" class="text-3xl font-extrabold mt-2 text-sky-400">214%</h2>
+                    </div>
+                    <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl"><i data-lucide="percent"></i></div>
+                </div>
+                <p class="text-xs text-sky-400 mt-4">أعلى من متوسط القطاع بـ 35%</p>
+            </div>
+
+            <div class="glass p-6 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-slate-400 text-sm">مؤشر المخاطرة التشغيلي</p>
+                        <h2 id="kpi-risk" class="text-3xl font-extrabold mt-2 text-amber-400">منخفض (14%)</h2>
+                    </div>
+                    <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl"><i data-lucide="shield-check"></i></div>
+                </div>
+                <p class="text-xs text-slate-400 mt-4">توازن مثالي بين السيولة والنمو</p>
+            </div>
+        </section>
+
+        <!-- 2. قسم المحاكاة التفاعلية والرسوم البيانية -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- محاكي القرارات المالية (Interactive Simulator) -->
+            <div class="glass p-6 rounded-2xl flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="sliders" class="text-indigo-400 w-5 h-5"></i>
+                        <h3 class="text-lg font-bold">محاكي نمو الأعمال التفاعلي</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-6">حرك المؤشرات لمحاكاة تأثير الميزانية والتشغيل على أرباح الشركة لحظياً:</p>
+
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>ميزانية التسويق والتوسع الشهرية</span>
+                                <span id="val-marketing" class="font-bold text-indigo-400">$15,000</span>
+                            </div>
+                            <input id="sim-marketing" type="range" min="5000" max="50000" step="1000" value="15000" class="w-full cursor-pointer" oninput="updateSimulation()">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>معدل تحويل العملاء (Conversion Rate)</span>
+                                <span id="val-conversion" class="font-bold text-sky-400">4.5%</span>
+                            </div>
+                            <input id="sim-conversion" type="range" min="1" max="12" step="0.5" value="4.5" class="w-full cursor-pointer" oninput="updateSimulation()">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>تكلفة التشغيل الثابتة</span>
+                                <span id="val-cost" class="font-bold text-rose-400">$25,000</span>
+                            </div>
+                            <input id="sim-cost" type="range" min="10000" max="60000" step="2000" value="25000" class="w-full cursor-pointer" oninput="updateSimulation()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-indigo-950/40 border border-indigo-500/20 rounded-xl">
+                    <p class="text-xs text-indigo-300 font-semibold mb-1">💡 توصية المحرك الذكي:</p>
+                    <p id="ai-insight" class="text-xs text-slate-300 leading-relaxed">الوضع الحالي يحقق نمواً مستداماً. زيادة معدل التحويل بنسبة 1% إضافية سترفع صافي الأرباح بمقدار $18,500 دون زيادة التكاليف.</p>
+                </div>
+            </div>
+
+            <!-- الرسم البياني التفاعلي (Chart.js) -->
+            <div class="glass p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between">
+                <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold">تحليل التدفقات النقدية وتوقعات الأرباح</h3>
+                        <p class="text-xs text-slate-400">مقارنة الأداء الفعلي مع التوقعات المبنية على المحاكاة</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="switchDataset('monthly')" class="text-xs bg-slate-800 hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition">شهري</button>
+                        <button onclick="switchDataset('quarterly')" class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg transition">ربع سنوي</button>
+                    </div>
+                </div>
+                <div class="relative h-72 w-full">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 3. جدول إدارة المشاريع والعمليات مع بحث وفلترة فورية -->
+        <section class="glass p-6 rounded-2xl space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h3 class="text-lg font-bold">سجل العمليات والمشاريع الاستراتيجية</h3>
+                    <p class="text-xs text-slate-400">ابحث أو فلتر العمليات حسب الحالة أو القسم</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <input id="searchInput" type="text" oninput="filterTable()" placeholder="ابحث عن مشروع أو عميل..." class="bg-slate-900/80 border border-slate-700 text-sm rounded-xl px-4 py-2 w-64 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <select id="statusFilter" onchange="filterTable()" class="bg-slate-900/80 border border-slate-700 text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500">
+                        <option value="all">جميع الحالات</option>
+                        <option value="مكتمل">مكتمل</option>
+                        <option value="قيد التنفيذ">قيد التنفيذ</option>
+                        <option value="مراجعة">قيد المراجعة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-right text-sm">
+                    <thead class="text-xs text-slate-400 border-b border-slate-800">
+                        <tr>
+                            <th class="py-3 px-4">اسم المشروع / العملية</th>
+                            <th class="py-3 px-4">القطاع</th>
+                            <th class="py-3 px-4">الميزانية</th>
+                            <th class="py-3 px-4">العائد المتوقع</th>
+                            <th class="py-3 px-4">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTable" class="divide-y divide-slate-800/60">
+                        <!-- يتم تعبئتها ديناميكياً عبر JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- تذييل الصفحة (Footer) -->
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+        تم التصميم والتطوير بواسطة <span class="text-indigo-400 font-semibold">Hafedh Aldheeb</span> — جميع الحقوق محفوظة © 2026
+    </footer>
+
+    <!-- المنطق البرمجي والتفاعلي (JavaScript) -->
+    <script>
+        lucide.createIcons();
+
+        // بيانات الجدول الأولية
+        const projectsData = [
+            { name: "أتمتة نظام المستودعات السحابي", sector: "الخدمات اللوجستية", budget: "$32,000", roi: "+145%", status: "مكتمل" },
+            { name: "بوابة الدفع الإلكتروني الموحدة", sector: "التقنية المالية (FinTech)", budget: "$45,000", roi: "+210%", status: "قيد التنفيذ" },
+            { name: "تحليل سلوك المستهلك بالذكاء الاصطناعي", sector: "التجارة الإلكترونية", budget: "$18,500", roi: "+180%", status: "مكتمل" },
+            { name: "تطبيق إدارة الأسطول والتتبع اللحظي", sector: "النقل والمواصلات", budget: "$29,000", roi: "+130%", status: "قيد التنفيذ" },
+            { name: "تطوير البنية التحتية للأمن السيبراني", sector: "أمن المعلومات", budget: "$40,000", roi: "+95%", status: "مراجعة" }
+        ];
+
+        function renderTable(data) {
+            const tbody = document.getElementById("projectsTable");
+            tbody.innerHTML = data.map(item => {
+                const badgeColor = item.status === "مكتمل" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                   item.status === "قيد التنفيذ" ? "bg-sky-500/10 text-sky-400 border-sky-500/20" :
+                                   "bg-amber-500/10 text-amber-400 border-amber-500/20";
+                return `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-3.5 px-4 font-semibold text-white">${item.name}</td>
+                        <td class="py-3.5 px-4 text-slate-400">${item.sector}</td>
+                        <td class="py-3.5 px-4 font-mono">${item.budget}</td>
+                        <td class="py-3.5 px-4 font-mono text-emerald-400 font-bold">${item.roi}</td>
+                        <td class="py-3.5 px-4">
+                            <span class="text-xs px-2.5 py-1 rounded-full border ${badgeColor}">${item.status}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        function filterTable() {
+            const q = document.getElementById("searchInput").value.toLowerCase();
+            const status = document.getElementById("statusFilter").value;
+            const filtered = projectsData.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(q) || item.sector.toLowerCase().includes(q);
+                const matchesStatus = status === "all" || item.status === status;
+                return matchesSearch && matchesStatus;
+            });
+            renderTable(filtered);
+        }
+
+        // إعداد الرسم البياني Chart.js
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [
+                    {
+                        label: 'الإيرادات المتوقعة ($)',
+                        data: [65000, 78000, 92000, 110000, 128000, 148500],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'صافي الربح ($)',
+                        data: [25000, 31000, 40000, 48000, 55000, 64200],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#cbd5e1', font: { family: 'Cairo' } } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8', font: { family: 'Cairo' } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                }
+            }
+        });
+
+        // تحديث المحاكي اللحظي والرسوم البيانية
+        function updateSimulation() {
+            const marketing = parseFloat(document.getElementById("sim-marketing").value);
+            const conversion = parseFloat(document.getElementById("sim-conversion").value);
+            const cost = parseFloat(document.getElementById("sim-cost").value);
+
+            document.getElementById("val-marketing").innerText = "$" + marketing.toLocaleString();
+            document.getElementById("val-conversion").innerText = conversion + "%";
+            document.getElementById("val-cost").innerText = "$" + cost.toLocaleString();
+
+            const simulatedRevenue = Math.round(marketing * (conversion * 2.2));
+            const totalExpenses = marketing + cost;
+            const netProfit = simulatedRevenue - totalExpenses;
+            const roi = Math.round((netProfit / totalExpenses) * 100);
+
+            document.getElementById("kpi-revenue").innerText = "$" + simulatedRevenue.toLocaleString();
+            document.getElementById("kpi-profit").innerText = (netProfit >= 0 ? "$" : "-$") + Math.abs(netProfit).toLocaleString();
+            document.getElementById("kpi-profit").className = `text-3xl font-extrabold mt-2 ${netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+            document.getElementById("kpi-roi").innerText = roi + "%";
+
+            // تحديث مستوى المخاطرة والتوصية
+            const riskEl = document.getElementById("kpi-risk");
+            const insightEl = document.getElementById("ai-insight");
+            if (roi > 120) {
+                riskEl.innerText = "منخفض (12%)";
+                riskEl.className = "text-3xl font-extrabold mt-2 text-emerald-400";
+                insightEl.innerText = "أداء ممتاز! العائد على الاستثمار مرتفع جداً مقارنة بنفقات التشغيل.";
+            } else if (roi > 30) {
+                riskEl.innerText = "متوسط (38%)";
+                riskEl.className = "text-3xl font-extrabold mt-2 text-amber-400";
+                insightEl.innerText = "الأرباح إيجابية، لكن يُنصح بتحسين معدل التحويل لتقليل أثر التكاليف الثابتة.";
+            } else {
+                riskEl.innerText = "مرتفع (75%)";
+                riskEl.className = "text-3xl font-extrabold mt-2 text-rose-400";
+                insightEl.innerText = "تنبيه: التكاليف تقترب من الإيرادات. قم بتخفيض تكاليف التشغيل أو رفع كفاءة التسويق.";
+            }
+
+            // تحديث الرسم البياني ديناميكياً
+            revenueChart.data.datasets[0].data[5] = simulatedRevenue;
+            revenueChart.data.datasets[1].data[5] = Math.max(0, netProfit);
+            revenueChart.update();
+        }
+
+        function switchDataset(type) {
+            if (type === 'monthly') {
+                revenueChart.data.labels = ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'];
+                revenueChart.data.datasets[0].data = [32000, 38000, 41000, 45000];
+                revenueChart.data.datasets[1].data = [12000, 15000, 18000, 21000];
+            } else {
+                revenueChart.data.labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'];
+                revenueChart.data.datasets[0].data = [65000, 78000, 92000, 110000, 128000, 148500];
+                revenueChart.data.datasets[1].data = [25000, 31000, 40000, 48000, 55000, 64200];
+            }
+            revenueChart.update();
+        }
+
+        function exportReport() {
+            alert("تم تجهيز التقرير المالي بصيغة PDF بنجاح وجارٍ التحميل!");
+        }
+
+        // تشغيل الجدول عند الفتح
+        renderTable(projectsData);
+    </script>
+</body>
+</html>
